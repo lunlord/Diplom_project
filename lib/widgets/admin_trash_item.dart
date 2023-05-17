@@ -11,6 +11,7 @@ class AdminTrashItem extends StatelessWidget {
   AdminTrashItem(this.id, this.title, this.imageUrl);
   @override
   Widget build(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
     return ListTile(
       title: Text(title),
       leading: CircleAvatar(
@@ -28,9 +29,17 @@ class AdminTrashItem extends StatelessWidget {
             color: Theme.of(context).primaryColor,
           ),
           IconButton(
-            onPressed: () {
-              Provider.of<TrashProvider>(context, listen: false)
-                  .deleteTrash(id);
+            onPressed: () async {
+              try {
+                Provider.of<TrashProvider>(context, listen: false)
+                    .deleteTrash(id);
+              } catch (error) {
+                scaffold.showSnackBar(
+                  SnackBar(
+                    content: Text('Удалить не получилось'),
+                  ),
+                );
+              }
             },
             icon: Icon(
               Icons.delete,

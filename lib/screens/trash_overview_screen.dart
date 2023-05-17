@@ -4,6 +4,7 @@ import '../widgets/app_drawer.dart';
 import 'package:trashClean/widgets/app_drawer.dart';
 import '../widgets/trash_grid.dart';
 import '../providers/trash_provider.dart';
+import 'package:http/http.dart' as http;
 
 enum FilterOptions {
   Favorites,
@@ -17,6 +18,33 @@ class TrashOverviewScreen extends StatefulWidget {
 
 class _TrashOverviewScreenState extends State<TrashOverviewScreen> {
   var _showOnlyFavorites = false;
+  var _isInit = true;
+  var _isLoading = false;
+
+  @override
+  void initState() {
+    // Provider.of<TrashProvider>(context).fetchAndSetTrash();
+    // Future.delayed(Duration.zero).then(
+    //   (_) => Provider.of<TrashProvider>(context).fetchAndSetTrash(),
+    // );
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<TrashProvider>(context).fetchAndSetTrash().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +76,11 @@ class _TrashOverviewScreenState extends State<TrashOverviewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: TrashGrid(_showOnlyFavorites),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : TrashGrid(_showOnlyFavorites),
     );
   }
 }

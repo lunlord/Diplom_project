@@ -50,18 +50,20 @@ class TrashItem extends StatelessWidget {
               onPressed: () {
                 trash.toggleFavoriteStatus();
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Добавлено в избранное',
-                        textAlign: TextAlign.center),
-                    duration: Duration(seconds: 2),
-                    action: SnackBarAction(
-                        label: 'Отменить',
-                        onPressed: () {
-                          trashs.removeSingleFavorite(trash.id);
-                        }),
-                  ),
-                );
+                //TO-Do
+
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   SnackBar(
+                //     content: Text('Добавлено в избранное',
+                //         textAlign: TextAlign.center),
+                //     duration: Duration(seconds: 2),
+                //     action: SnackBarAction(
+                //         label: 'Отменить',
+                //         onPressed: () {
+                //           trashs.removeSingleFavorite(trash.id);
+                //         }),
+                //   ),
+                // );
               },
             ),
           ),

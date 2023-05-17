@@ -7,6 +7,11 @@ import '../widgets/app_drawer.dart';
 
 class ManageTrashAdmin extends StatelessWidget {
   static const routeName = '/manage-trash';
+
+  Future<void> _refreshTrash(BuildContext context) async {
+    await Provider.of<TrashProvider>(context, listen: false).fetchAndSetTrash();
+  }
+
   @override
   Widget build(BuildContext context) {
     final trashData = Provider.of<TrashProvider>(context);
@@ -23,19 +28,22 @@ class ManageTrashAdmin extends StatelessWidget {
         ],
       ),
       drawer: AppDrawer(),
-      body: Padding(
-        padding: EdgeInsets.all(8),
-        child: ListView.builder(
-          itemCount: trashData.items.length,
-          itemBuilder: (_, i) => Column(
-            children: [
-              AdminTrashItem(
-                trashData.items[i].id,
-                trashData.items[i].title,
-                trashData.items[i].imageUrl,
-              ),
-              Divider(),
-            ],
+      body: RefreshIndicator(
+        onRefresh: () => _refreshTrash(context),
+        child: Padding(
+          padding: EdgeInsets.all(8),
+          child: ListView.builder(
+            itemCount: trashData.items.length,
+            itemBuilder: (_, i) => Column(
+              children: [
+                AdminTrashItem(
+                  trashData.items[i].id,
+                  trashData.items[i].title,
+                  trashData.items[i].imageUrl,
+                ),
+                Divider(),
+              ],
+            ),
           ),
         ),
       ),
