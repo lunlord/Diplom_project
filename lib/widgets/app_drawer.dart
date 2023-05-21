@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:trashClean/screens/manage_trash_admin_screen.dart';
+import '../providers/auth.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -22,10 +24,19 @@ class AppDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.edit),
-            title: Text('Управление лентой'),
+            title: Text('Управление добавленными записями'),
             onTap: () {
               Navigator.of(context)
                   .pushReplacementNamed(ManageTrashAdmin.routeName);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.exit_to_app),
+            title: Text('Выйти'),
+            onTap: () {
+              Navigator.of(context).pop();
+              Provider.of<Auth>(context, listen: false).logout();
             },
           ),
         ],

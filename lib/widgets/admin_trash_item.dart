@@ -31,7 +31,7 @@ class AdminTrashItem extends StatelessWidget {
           IconButton(
             onPressed: () async {
               try {
-                Provider.of<TrashProvider>(context, listen: false)
+                await Provider.of<TrashProvider>(context, listen: false)
                     .deleteTrash(id);
               } catch (error) {
                 scaffold.showSnackBar(

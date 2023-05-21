@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:trashClean/providers/auth.dart';
 import 'package:trashClean/providers/trash_provider.dart';
 import '../providers/trash.dart';
 import '../screens/cleaning_trash_screen.dart';
@@ -22,6 +23,7 @@ class _TrashDetailScreenState extends State<TrashDetailScreen> {
       context,
       listen: false,
     ).getTrashById(trashId);
+    final authData = Provider.of<Auth>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -54,9 +56,11 @@ class _TrashDetailScreenState extends State<TrashDetailScreen> {
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        loadedTrash.title,
-                        style: TextStyle(fontSize: 20),
+                      child: Center(
+                        child: Text(
+                          loadedTrash.title,
+                          style: TextStyle(fontSize: 20),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -76,7 +80,8 @@ class _TrashDetailScreenState extends State<TrashDetailScreen> {
                         ),
                         child: IconButton(
                           onPressed: () => setState(() {
-                            loadedTrash.toggleFavoriteStatus();
+                            loadedTrash.toggleFavoriteStatus(
+                                authData.token, authData.userId);
                           }),
                           icon: loadedTrash.isFavorite
                               ? Icon(Icons.favorite)
@@ -89,7 +94,11 @@ class _TrashDetailScreenState extends State<TrashDetailScreen> {
                       height: 100,
                       child: Padding(
                         padding: const EdgeInsets.only(left: 20, right: 30),
-                        child: Text(loadedTrash.description),
+                        child: Center(
+                            child: Text(
+                          loadedTrash.description,
+                          style: TextStyle(fontSize: 15),
+                        )),
                       ),
                     ),
                     Center(

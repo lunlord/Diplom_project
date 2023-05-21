@@ -29,6 +29,10 @@ class TrashProvider with ChangeNotifier {
     // ),
   ];
   var _showFavoritesOnly = false;
+  final String authToken;
+  final String userId;
+
+  TrashProvider(this.authToken, this.userId, this._items);
 
   List<Trash> get items {
     // if (_showFavoritesOnly) {
@@ -50,21 +54,34 @@ class TrashProvider with ChangeNotifier {
   //   _showFavoritesOnly = false;
   //   notifyListeners();
   // }
-  Future<void> fetchAndSetTrash() async {
-    const url =
-        'https://my-project-52730-default-rtdb.firebaseio.com/trash.json';
+  Future<void> fetchAndSetTrash([bool filterByUser = false]) async {
+    final fliterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+    var url =
+        'https://my-project-52730-default-rtdb.firebaseio.com/trash.json?auth=$authToken&$fliterString';
     try {
       final response = await http.get(Uri.parse(url));
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      if (extractedData == null) {
+        return;
+      }
+      url =
+          'https://my-project-52730-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
+      final favoriteResponse = await http.get(Uri.parse(url));
+      final favoriteData = json.decode(favoriteResponse.body);
       final List<Trash> loadedTrash = [];
       extractedData.forEach((trashId, trashData) {
-        loadedTrash.add(Trash(
+        loadedTrash.add(
+          Trash(
             id: trashId,
             title: trashData['title'],
             description: trashData['description'],
             imageUrl: trashData['imageUrl'],
             isCleaned: trashData['isCleaned'],
-            isFavorite: trashData['isFavorite']));
+            isFavorite:
+                favoriteData == null ? false : favoriteData[trashId] ?? false,
+          ),
+        );
       });
       _items = loadedTrash;
       notifyListeners();
@@ -74,8 +91,8 @@ class TrashProvider with ChangeNotifier {
   }
 
   Future<void> addTrash(Trash trash) async {
-    const url =
-        'https://my-project-52730-default-rtdb.firebaseio.com/trash.json';
+    final url =
+        'https://my-project-52730-default-rtdb.firebaseio.com/trash.json?auth=$authToken';
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -83,8 +100,8 @@ class TrashProvider with ChangeNotifier {
           'imageUrl': trash.imageUrl,
           'title': trash.title,
           'description': trash.description,
-          'isFavorite': trash.isFavorite,
           'isCleaned': trash.isCleaned,
+          'creatorId': userId
         }),
       );
       final newTrash = Trash(
@@ -121,7 +138,7 @@ class TrashProvider with ChangeNotifier {
     final trashIndex = _items.indexWhere((element) => element.id == id);
     if (trashIndex >= 0) {
       final url =
-          'https://my-project-52730-default-rtdb.firebaseio.com/trash/$id.json';
+          'https://my-project-52730-default-rtdb.firebaseio.com/trash/$id.json?auth=$authToken';
       await http.patch(Uri.parse(url),
           body: json.encode({
             'title': newTrash.title,
@@ -133,15 +150,14 @@ class TrashProvider with ChangeNotifier {
     }
   }
 
-  void deleteTrash(String id) async {
+  Future<void> deleteTrash(String id) async {
     final url =
-        'https://my-project-52730-default-rtdb.firebaseio.com/trash/$id.json';
+        'https://my-project-52730-default-rtdb.firebaseio.com/trash/$id.json?auth=$authToken';
     final existingTrashIndex = _items.indexWhere((element) => element.id == id);
     var existingTrash = _items[existingTrashIndex];
     _items.removeAt(existingTrashIndex);
     notifyListeners();
     final response = await http.delete(Uri.parse(url));
-
     if (response.statusCode >= 400) {
       _items.insert(existingTrashIndex, existingTrash);
       notifyListeners();

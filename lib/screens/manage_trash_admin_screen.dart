@@ -9,15 +9,16 @@ class ManageTrashAdmin extends StatelessWidget {
   static const routeName = '/manage-trash';
 
   Future<void> _refreshTrash(BuildContext context) async {
-    await Provider.of<TrashProvider>(context, listen: false).fetchAndSetTrash();
+    await Provider.of<TrashProvider>(context, listen: false)
+        .fetchAndSetTrash(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final trashData = Provider.of<TrashProvider>(context);
+    // final trashData = Provider.of<TrashProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Управление мусором'),
+        title: const Text('Управление'),
         actions: [
           IconButton(
             onPressed: () {
@@ -28,24 +29,34 @@ class ManageTrashAdmin extends StatelessWidget {
         ],
       ),
       drawer: AppDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshTrash(context),
-        child: Padding(
-          padding: EdgeInsets.all(8),
-          child: ListView.builder(
-            itemCount: trashData.items.length,
-            itemBuilder: (_, i) => Column(
-              children: [
-                AdminTrashItem(
-                  trashData.items[i].id,
-                  trashData.items[i].title,
-                  trashData.items[i].imageUrl,
-                ),
-                Divider(),
-              ],
-            ),
-          ),
-        ),
+      body: FutureBuilder(
+        future: _refreshTrash(context),
+        builder: (ctx, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : RefreshIndicator(
+                    onRefresh: () => _refreshTrash(context),
+                    child: Consumer<TrashProvider>(
+                      builder: (ctx, trashData, _) => Padding(
+                        padding: EdgeInsets.all(8),
+                        child: ListView.builder(
+                          itemCount: trashData.items.length,
+                          itemBuilder: (_, i) => Column(
+                            children: [
+                              AdminTrashItem(
+                                trashData.items[i].id,
+                                trashData.items[i].title,
+                                trashData.items[i].imageUrl,
+                              ),
+                              Divider(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
       ),
     );
   }

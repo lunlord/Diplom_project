@@ -19,18 +19,18 @@ class Trash with ChangeNotifier {
       this.isFavorite = false,
       this.isCleaned = false});
 
-  Future<void> toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(String token, String userId) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
     final url =
-        'https://my-project-52730-default-rtdb.firebaseio.com/trash/$id.json';
+        'https://my-project-52730-default-rtdb.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
     try {
-      await http.patch(
+      await http.put(
         Uri.parse(url),
-        body: json.encode({
-          'isFavorite': isFavorite,
-        }),
+        body: json.encode(
+          isFavorite,
+        ),
       );
     } catch (error) {
       isFavorite = oldStatus;

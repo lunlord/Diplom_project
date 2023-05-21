@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:trashClean/providers/trash_provider.dart';
 import '../screens/trash_detail_screen.dart';
 import '../providers/trash.dart';
+import '../providers/auth.dart';
 
 class TrashItem extends StatelessWidget {
   // final String id;
@@ -15,6 +16,7 @@ class TrashItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final trash = Provider.of<Trash>(context);
     final trashs = Provider.of<TrashProvider>(context);
+    final authData = Provider.of<Auth>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -32,9 +34,9 @@ class TrashItem extends StatelessWidget {
         ),
         footer: GridTileBar(
           title: FittedBox(
+            fit: BoxFit.scaleDown,
             child: Text(
               trash.title,
-              textAlign: TextAlign.center,
               style: TextStyle(fontSize: 20),
             ),
           ),
@@ -48,7 +50,10 @@ class TrashItem extends StatelessWidget {
                 color: Theme.of(context).accentColor,
               ),
               onPressed: () {
-                trash.toggleFavoriteStatus();
+                trash.toggleFavoriteStatus(
+                  authData.token,
+                  authData.userId,
+                );
 
                 //TO-Do
 
