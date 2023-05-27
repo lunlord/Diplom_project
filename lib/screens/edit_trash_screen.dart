@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trashClean/providers/trash.dart';
 import 'package:trashClean/providers/trash_provider.dart';
+import '../widgets/image_input.dart';
 
 class EditTrashScreen extends StatefulWidget {
   static const routeName = '/edit-trash';
@@ -21,6 +22,12 @@ class _EditTrashScreenState extends State<EditTrashScreen> {
   void initState() {
     _imageFocus.addListener(_updateImageUrl);
     super.initState();
+  }
+
+  void _selectImage(String pickedImage) {
+    if (pickedImage != null) {
+      _editedTrash.imageUrl = pickedImage;
+    }
   }
 
   var _initValues = {
@@ -130,57 +137,7 @@ class _EditTrashScreenState extends State<EditTrashScreen> {
                 key: _form,
                 child: ListView(
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 100,
-                          margin: EdgeInsets.only(top: 8, right: 10),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 1,
-                              color: Colors.green,
-                            ),
-                          ),
-                          child: _imageUrlController.text.isEmpty
-                              ? Text('URL')
-                              : FittedBox(
-                                  child:
-                                      Image.network(_imageUrlController.text),
-                                ),
-                        ),
-                        Expanded(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                                labelText: 'Ссылка на картинку'),
-                            keyboardType: TextInputType.url,
-                            textInputAction: TextInputAction.next,
-                            onFieldSubmitted: (_) {
-                              FocusScope.of(context).requestFocus(_titleFocus);
-                            },
-                            controller: _imageUrlController,
-                            focusNode: _imageFocus,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Введите URL';
-                              }
-                              return null;
-                            },
-                            onSaved: (newValue) {
-                              _editedTrash = Trash(
-                                id: _editedTrash.id,
-                                title: _editedTrash.title,
-                                description: _editedTrash.description,
-                                imageUrl: newValue,
-                                isCleaned: _editedTrash.isCleaned,
-                                isFavorite: _editedTrash.isFavorite,
-                              );
-                            },
-                          ),
-                        )
-                      ],
-                    ),
+                    ImageInput(_selectImage),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Название'),
                       initialValue: _initValues['title'],

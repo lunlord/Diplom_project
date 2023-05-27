@@ -9,8 +9,13 @@ import './providers/trash_provider.dart';
 import './screens/manage_trash_admin_screen.dart';
 import './screens/edit_trash_screen.dart';
 import './screens/auth_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override

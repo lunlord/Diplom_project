@@ -5,9 +5,9 @@ import 'package:http/http.dart' as http;
 
 class Trash with ChangeNotifier {
   final String id;
-  final String title;
+  String title;
   final String description;
-  final String imageUrl;
+  String imageUrl;
   bool isFavorite;
   bool isCleaned;
 
