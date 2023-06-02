@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:trashClean/models/place_location.dart';
 
 class Trash with ChangeNotifier {
   final String id;
   String title;
   final String description;
   String imageUrl;
+  PlaceLocation location;
   bool isFavorite;
   bool isCleaned;
 
@@ -16,6 +18,7 @@ class Trash with ChangeNotifier {
       @required this.title,
       @required this.description,
       @required this.imageUrl,
+      @required this.location,
       this.isFavorite = false,
       this.isCleaned = false});
 

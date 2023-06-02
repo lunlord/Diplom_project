@@ -1,33 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:trashClean/models/place_location.dart';
 import './trash.dart';
 import 'package:http/http.dart' as http;
+import '../helpers/location_helper.dart';
 
 class TrashProvider with ChangeNotifier {
-  List<Trash> _items = [
-    // Trash(
-    //   id: '1',
-    //   title: 'большая куча',
-    //   description:
-    //       'находится в Ленинском р-неaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    //   imageUrl:
-    //       'https://avatars.mds.yandex.net/i?id=2a00000188114365d2e08740aaf5ee7df41e-1633790-fast-images&n=13',
-    // ),
-    // Trash(
-    //   id: '2',
-    //   title: 'небольшая куча',
-    //   description: 'находится в Фрунзенском р-не',
-    //   imageUrl:
-    //       'https://mkset.ru/attachments/0a1b2084d5e8c1fef9fef0ec9eef5754c5177617/store/crop/0/120/1280/720/1280/720/0/02b86ce4bea0b19bef62e389628e4c642184ee1f03674238e8280efdc715/1683806505088.jpg',
-    // ),
-    // Trash(
-    //   id: '3',
-    //   title: 'небольшая, около Киномакса',
-    //   description: 'находится в Ленинском р-не',
-    //   imageUrl: 'https://images.kinomax.ru/800/news/2018/05/290510_845951.jpg',
-    // ),
-  ];
+  List<Trash> _items = [];
   var _showFavoritesOnly = false;
   final String authToken;
   final String userId;
@@ -78,6 +58,10 @@ class TrashProvider with ChangeNotifier {
             description: trashData['description'],
             imageUrl: trashData['imageUrl'],
             isCleaned: trashData['isCleaned'],
+            location: PlaceLocation(
+                latitude: trashData['latitude'],
+                longitude: trashData['longitude'],
+                address: trashData['address']),
             isFavorite:
                 favoriteData == null ? false : favoriteData[trashId] ?? false,
           ),
@@ -90,25 +74,49 @@ class TrashProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addTrash(Trash trash) async {
+  Future<void> addTrash(Trash trash, PlaceLocation placeLocation) async {
+    final address = await LocationHelper.getPlaceAddress(
+      placeLocation.latitude,
+      placeLocation.longitude,
+    );
+    final updatedLocation = PlaceLocation(
+        latitude: placeLocation.latitude,
+        longitude: placeLocation.longitude,
+        address: address);
     final url =
         'https://my-project-52730-default-rtdb.firebaseio.com/trash.json?auth=$authToken';
     try {
+      // final address = await LocationHelper.getPlaceAddress(
+      //     trash.location.latitude, trash.location.longitude);
       final response = await http.post(
         Uri.parse(url),
         body: json.encode({
           'imageUrl': trash.imageUrl,
           'title': trash.title,
           'description': trash.description,
+          'latitude': placeLocation.latitude,
+          'longitude': placeLocation.longitude,
+          'address': address,
           'isCleaned': trash.isCleaned,
-          'creatorId': userId
+          'creatorId': userId,
+
+          // 'latitude': trash.location.latitude,
+          // 'longitude': trash.location.longitude,
+          // 'address': trash.location.address
         }),
       );
+      // final updatedLocation = PlaceLocation(
+      //     latitude: trash.location.latitude,
+      //     longitude: trash.location.longitude,
+      //     address: address);
       final newTrash = Trash(
-          id: json.decode(response.body)['name'],
-          title: trash.title,
-          description: trash.description,
-          imageUrl: trash.imageUrl);
+        id: json.decode(response.body)['name'],
+        title: trash.title,
+        description: trash.description,
+        imageUrl: trash.imageUrl,
+        location: updatedLocation,
+      );
+
       _items.add(newTrash);
       notifyListeners();
     } catch (error) {
@@ -161,7 +169,7 @@ class TrashProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       _items.insert(existingTrashIndex, existingTrash);
       notifyListeners();
-      throw HttpException('Продукт не удалился');
+      throw HttpException('Мусор не удалился');
     }
     existingTrash = null;
   }

@@ -40,6 +40,8 @@ class TrashItem extends StatelessWidget {
               style: TextStyle(fontSize: 20),
             ),
           ),
+          // subtitle: FittedBox(child: Text(trash.location.address)),
+          // subtitle: Text(trash.location.address),
           backgroundColor: Colors.black54,
           leading: Consumer<Trash>(
             builder: (ctx, trash, _) => IconButton(

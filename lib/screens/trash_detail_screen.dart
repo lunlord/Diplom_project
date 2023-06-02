@@ -4,6 +4,7 @@ import 'package:trashClean/providers/auth.dart';
 import 'package:trashClean/providers/trash_provider.dart';
 import '../providers/trash.dart';
 import '../screens/cleaning_trash_screen.dart';
+import '../screens/map_screen.dart';
 
 class TrashDetailScreen extends StatefulWidget {
   // final String title;
@@ -38,7 +39,38 @@ class _TrashDetailScreenState extends State<TrashDetailScreen> {
                   child:
                       Image.network(loadedTrash.imageUrl, fit: BoxFit.cover)),
               width: double.infinity,
+              height: 400,
               margin: EdgeInsets.all(10),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              loadedTrash.location.address,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 20,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (context) {
+                        return MapScreen(
+                          initialLocation: loadedTrash.location,
+                          isSelecting: false,
+                        );
+                      }),
+                );
+              },
+              icon: Icon(Icons.map),
+              label: Text('Показать на карте'),
             ),
             Container(
               margin: EdgeInsets.only(top: 15),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:trashClean/models/place_location.dart';
 import 'package:trashClean/providers/trash.dart';
 import 'package:trashClean/providers/trash_provider.dart';
+import 'package:trashClean/widgets/location_input.dart';
 import '../widgets/image_input.dart';
 
 class EditTrashScreen extends StatefulWidget {
@@ -16,11 +18,18 @@ class _EditTrashScreenState extends State<EditTrashScreen> {
   final _imageFocus = FocusNode();
   final _descriptionFocus = FocusNode();
   final _form = GlobalKey<FormState>();
-  var _editedTrash = Trash(id: null, title: '', description: '', imageUrl: '');
+  var _editedTrash = Trash(
+    id: null,
+    title: '',
+    description: '',
+    imageUrl: '',
+  );
+  PlaceLocation _pickedLocation;
 
   @override
   void initState() {
     _imageFocus.addListener(_updateImageUrl);
+    // _editedTrash.location = _pickedLocation;
     super.initState();
   }
 
@@ -30,6 +39,10 @@ class _EditTrashScreenState extends State<EditTrashScreen> {
     }
   }
 
+  void _selectPlace(double lat, double long) {
+    _pickedLocation = PlaceLocation(latitude: lat, longitude: long);
+  }
+
   var _initValues = {
     'imageUrl': '',
     'title': '',
@@ -37,6 +50,7 @@ class _EditTrashScreenState extends State<EditTrashScreen> {
   };
   var _isInit = true;
   var _isLoading = false;
+
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -78,8 +92,11 @@ class _EditTrashScreenState extends State<EditTrashScreen> {
           .updateTrash(_editedTrash.id, _editedTrash);
     } else {
       try {
-        await Provider.of<TrashProvider>(context, listen: false)
-            .addTrash(_editedTrash);
+        if (_pickedLocation != null) {
+          // _editedTrash.location = _pickedLocation;
+          await Provider.of<TrashProvider>(context, listen: false)
+              .addTrash(_editedTrash, _pickedLocation);
+        }
       } catch (error) {
         await showDialog(
           context: context,
@@ -192,6 +209,10 @@ class _EditTrashScreenState extends State<EditTrashScreen> {
                       },
                     ),
                     SizedBox(height: 20),
+                    LocationInput(_selectPlace),
+                    SizedBox(
+                      height: 20,
+                    ),
                     ElevatedButton.icon(
                       onPressed: _saveForm,
                       icon: Icon(Icons.save),
