@@ -22,8 +22,10 @@ class AdminTrashItem extends StatelessWidget {
         children: [
           IconButton(
             onPressed: () {
-              Navigator.of(context)
-                  .pushNamed(EditTrashScreen.routeName, arguments: id);
+              Navigator.of(context).pushNamed(
+                EditTrashScreen.routeName,
+                arguments: id,
+              );
             },
             icon: Icon(Icons.edit),
             color: Theme.of(context).primaryColor,

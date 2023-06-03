@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:trashClean/screens/map_screen.dart';
 import '../widgets/app_drawer.dart';
 import 'package:trashClean/widgets/app_drawer.dart';
 import '../widgets/trash_grid.dart';
@@ -72,7 +73,44 @@ class _TrashOverviewScreenState extends State<TrashOverviewScreen> {
                       child: Text('Показать все'),
                       value: FilterOptions.All,
                     ),
-                  ])
+                  ]),
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) {
+                    Future<void> _showOnMap(BuildContext context) async {
+                      await Provider.of<TrashProvider>(context, listen: false)
+                          .fetchAndSetTrash(false);
+                    }
+
+                    return FutureBuilder(
+                      future: _showOnMap(context),
+                      builder: (ctx, snapshot) => snapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : Consumer<TrashProvider>(
+                              builder: (ctx, trashData, _) {
+                                // for (var i = 0;
+                                //     i < trashData.items.length;
+                                //     i++) {
+                                //   MapScreen(
+                                //     initialLocation:
+                                //         trashData.items[i].location,
+                                //     // id: trashData.items[i].id,
+                                //   );
+                                //   print(trashData.items[i].title);
+                                // }
+
+                                return MapScreen(trashList: trashData.items);
+                              },
+                            ),
+                    );
+                  },
+                ));
+              },
+              icon: Icon(Icons.map_rounded))
         ],
       ),
       drawer: AppDrawer(),
