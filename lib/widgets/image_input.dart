@@ -15,14 +15,6 @@ class _ImageInputState extends State<ImageInput> {
   File _storedImage;
   String imageUrl;
 
-  // Future _uploadFile() async {
-  //   final path = 'files/${_storedImage.uri}';
-  //   final file = File(_storedImage.path);
-
-  //   final ref = FirebaseStorage.instance.ref().child(path);
-  //   ref.putFile(file);
-  // }
-
   Future _takePicture() async {
     final imageFile = await ImagePicker().pickImage(source: ImageSource.camera);
     setState(() {
@@ -73,15 +65,6 @@ class _ImageInputState extends State<ImageInput> {
             icon: Icon(Icons.camera),
           ),
         ),
-        // Expanded(
-        //   child: TextButton.icon(
-        //     onPressed: () {
-        //       // _uploadFile();
-        //     },
-        //     label: Text('Загрузить'),
-        //     icon: Icon(Icons.camera),
-        //   ),
-        // ),
       ],
     );
   }

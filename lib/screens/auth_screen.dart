@@ -13,10 +13,7 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);
-    // transformConfig.translate(-10.0);
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
       body: Stack(
         children: <Widget>[
           Container(
@@ -45,9 +42,6 @@ class AuthScreen extends StatelessWidget {
                       margin: EdgeInsets.only(bottom: 20.0),
                       padding:
                           EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
-                      transform: Matrix4.rotationZ(-8 * pi / 180)
-                        ..translate(-10.0),
-                      // ..translate(-10.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: Color.fromARGB(255, 121, 201, 228),
@@ -59,15 +53,28 @@ class AuthScreen extends StatelessWidget {
                           )
                         ],
                       ),
-                      child: Text(
-                        'CleanTrash',
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 8, 79, 11),
-                          fontSize: 40,
-                          fontFamily: 'Anton',
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'УБОРКАРТА',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 8, 79, 11),
+                                fontSize: 20,
+                                fontFamily: 'Anton',
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            SizedBox(
+                              height: 30,
+                              width: 30,
+                              child: Image.network(
+                                  'https://i.ya-wd.com/images/icon-png-free-download.png'),
+                            )
+                          ]),
                     ),
                   ),
                   Flexible(

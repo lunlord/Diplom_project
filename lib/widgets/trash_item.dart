@@ -6,12 +6,6 @@ import '../providers/trash.dart';
 import '../providers/auth.dart';
 
 class TrashItem extends StatelessWidget {
-  // final String id;
-  // final String title;
-  // final String imageUrl;
-
-  // TrashItem(this.id, this.title, this.imageUrl);
-
   @override
   Widget build(BuildContext context) {
     final trash = Provider.of<Trash>(context);
@@ -40,8 +34,6 @@ class TrashItem extends StatelessWidget {
               style: TextStyle(fontSize: 20),
             ),
           ),
-          // subtitle: FittedBox(child: Text(trash.location.address)),
-          // subtitle: Text(trash.location.address),
           backgroundColor: Colors.black54,
           leading: Consumer<Trash>(
             builder: (ctx, trash, _) => IconButton(
@@ -56,21 +48,6 @@ class TrashItem extends StatelessWidget {
                   authData.token,
                   authData.userId,
                 );
-
-                //TO-Do
-
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   SnackBar(
-                //     content: Text('Добавлено в избранное',
-                //         textAlign: TextAlign.center),
-                //     duration: Duration(seconds: 2),
-                //     action: SnackBarAction(
-                //         label: 'Отменить',
-                //         onPressed: () {
-                //           trashs.removeSingleFavorite(trash.id);
-                //         }),
-                //   ),
-                // );
               },
             ),
           ),

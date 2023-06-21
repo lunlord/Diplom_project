@@ -51,7 +51,18 @@ class _TrashOverviewScreenState extends State<TrashOverviewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CleanTrash'),
+        title: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          Text('УБОРКАРТА'),
+          SizedBox(
+            width: 10,
+          ),
+          SizedBox(
+            height: 20,
+            width: 20,
+            child: Image.network(
+                'https://i.ya-wd.com/images/icon-png-free-download.png'),
+          )
+        ]),
         actions: [
           PopupMenuButton(
               onSelected: (FilterOptions selectedValue) {

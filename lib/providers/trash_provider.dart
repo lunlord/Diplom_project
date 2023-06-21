@@ -15,9 +15,6 @@ class TrashProvider with ChangeNotifier {
   TrashProvider(this.authToken, this.userId, this._items);
 
   List<Trash> get items {
-    // if (_showFavoritesOnly) {
-    //   return _items.where((element) => element.isFavorite).toList();
-    // }
     return [..._items.where((element) => element.isCleaned != true).toList()];
   }
 
@@ -25,15 +22,6 @@ class TrashProvider with ChangeNotifier {
     return _items.where((element) => element.isFavorite).toList();
   }
 
-  // void showFavoritesOnly() {
-  //   _showFavoritesOnly = true;
-  //   notifyListeners();
-  // }
-
-  // void showAll() {
-  //   _showFavoritesOnly = false;
-  //   notifyListeners();
-  // }
   Future<void> fetchAndSetTrash([bool filterByUser = false]) async {
     final fliterString =
         filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
@@ -86,8 +74,6 @@ class TrashProvider with ChangeNotifier {
     final url =
         'https://my-project-52730-default-rtdb.firebaseio.com/trash.json?auth=$authToken';
     try {
-      // final address = await LocationHelper.getPlaceAddress(
-      //     trash.location.latitude, trash.location.longitude);
       final response = await http.post(
         Uri.parse(url),
         body: json.encode({
@@ -99,16 +85,8 @@ class TrashProvider with ChangeNotifier {
           'address': address,
           'isCleaned': trash.isCleaned,
           'creatorId': userId,
-
-          // 'latitude': trash.location.latitude,
-          // 'longitude': trash.location.longitude,
-          // 'address': trash.location.address
         }),
       );
-      // final updatedLocation = PlaceLocation(
-      //     latitude: trash.location.latitude,
-      //     longitude: trash.location.longitude,
-      //     address: address);
       final newTrash = Trash(
         id: json.decode(response.body)['name'],
         title: trash.title,

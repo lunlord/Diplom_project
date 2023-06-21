@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:trashClean/models/place_location.dart';
 
+enum Statuses { Find, onChecking, Cleaned }
+
 class Trash with ChangeNotifier {
   final String id;
   String title;
@@ -12,6 +14,7 @@ class Trash with ChangeNotifier {
   PlaceLocation location;
   bool isFavorite;
   bool isCleaned;
+  Enum status;
 
   Trash(
       {@required this.id,
@@ -20,7 +23,8 @@ class Trash with ChangeNotifier {
       @required this.imageUrl,
       @required this.location,
       this.isFavorite = false,
-      this.isCleaned = false});
+      this.isCleaned = false,
+      this.status = Statuses.Find});
 
   Future<void> toggleFavoriteStatus(String token, String userId) async {
     final oldStatus = isFavorite;

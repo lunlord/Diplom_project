@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:trashClean/providers/trash_provider.dart';
+import 'package:trashClean/screens/trash_detail_screen.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 import 'package:location/location.dart';
 import '../models/place_location.dart';
 import '../providers/trash.dart';
-
-// typedef TapCallback<T> = void Function(T mapObject, Point point);
 
 class MapScreen extends StatefulWidget {
   final PlaceLocation initialLocation;
@@ -17,7 +12,6 @@ class MapScreen extends StatefulWidget {
 
   Future<void> _getCurrentUserLocation() async {
     final locData = await Location().getLocation();
-    // d.latitude = locData.latitude;
   }
 
   MapScreen(
@@ -41,29 +35,11 @@ class _MapScreenState extends State<MapScreen> {
         mapId: MapObjectId('mapId'),
         point: _pickedLocation,
         icon: PlacemarkIcon.single(PlacemarkIconStyle(
-            image:
-                BitmapDescriptor.fromAssetImage('assets/images/location1.png')))
-        // icon: PlacemarkIcon.single(PlacemarkIconStyle(image: Image.asset('name')))
-        ));
-    // print(_pickedLocation);
+            image: BitmapDescriptor.fromAssetImage(
+                'assets/images/location1.png')))));
   }
 
-  // void setCameraPos() async {
-  //   final yaMapCon = await YandexMapController().getCameraPosition();
-  // }
-
   List<MapObject> mapObjectCollections = [];
-
-  // void _addPlaceMarkOnMap() {
-  //   // mapObjectCollections.add(
-  //   //   PlacemarkMapObject(
-  //   //     mapId: MapObjectId('dasdadasdsa'),
-  //   //     point: Point(latitude: point.latitude, longitude: point.longitude),
-  //   //   ),
-  //   // );
-  //   var myMap = YandexMap();
-  //   myMap.onMapTap(Location().)
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +69,9 @@ class _MapScreenState extends State<MapScreen> {
                         point: Point(
                             latitude: widget.trashList[i].location.latitude,
                             longitude: widget.trashList[i].location.longitude),
+                        onTap: (mapObject, point) => Navigator.of(context)
+                            .pushNamed(TrashDetailScreen.routeName,
+                                arguments: widget.trashList[i].id),
                         icon: PlacemarkIcon.single(
                           PlacemarkIconStyle(
                             image: BitmapDescriptor.fromAssetImage(
@@ -145,9 +124,6 @@ class _MapScreenState extends State<MapScreen> {
                   mapObjectCollections;
                 });
               }
-            },
-            onObjectTap: (geoObject) {
-              return geoObject.boundingBox;
             },
             onMapTap: widget.isSelecting ? _selectLocation : null,
             mapObjects: widget.isSelecting

@@ -138,8 +138,12 @@ class _TrashDetailScreenState extends State<TrashDetailScreen> {
                         padding: EdgeInsets.all(10),
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () => Navigator.of(context)
-                              .pushNamed(CleaningTrashScreen.routeName),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CleaningTrashScreen(id: trashId),
+                              )),
                           child: Text('Отчитаться об уборке'),
                         ),
                       ),

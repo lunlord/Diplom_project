@@ -24,7 +24,7 @@ class AppDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.edit),
-            title: Text('Управление добавленными записями'),
+            title: Text('Управление добавленными сообщениями'),
             onTap: () {
               Navigator.of(context)
                   .pushReplacementNamed(ManageTrashAdmin.routeName);

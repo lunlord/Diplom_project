@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
                 primarySwatch: Colors.green,
                 accentColor: Colors.deepOrange,
                 fontFamily: 'Lato'),
+            debugShowCheckedModeBanner: false,
             home: auth.isAuth ? TrashOverviewScreen() : AuthScreen(),
             routes: {
               TrashDetailScreen.routeName: (ctx) => TrashDetailScreen(),
